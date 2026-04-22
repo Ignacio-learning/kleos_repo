@@ -90,28 +90,28 @@ const Hero = () => {
           
           <div className="w-full md:w-auto flex-1 text-center py-2">
             <div className="stat-number text-4xl mb-1">
-              +{statsInView ? <CountUp end={50} duration={2.5} /> : '0'}
+              +50
             </div>
             <div className="font-sans text-sm text-white/80 uppercase tracking-wider">Proyectos completados</div>
           </div>
           
           <div className="w-full md:w-auto flex-1 text-center py-2">
             <div className="stat-number text-4xl mb-1">
-              +{statsInView ? <CountUp end={8} duration={2.5} /> : '0'}
+              +8
             </div>
             <div className="font-sans text-sm text-white/80 uppercase tracking-wider">Años de experiencia</div>
           </div>
           
           <div className="w-full md:w-auto flex-1 text-center py-2">
             <div className="stat-number text-4xl mb-1">
-              {statsInView ? <CountUp end={98} duration={2.5} /> : '0'}%
+              98%
             </div>
             <div className="font-sans text-sm text-white/80 uppercase tracking-wider">Clientes satisfechos</div>
           </div>
           
           <div className="w-full md:w-auto flex-1 text-center py-2">
             <div className="stat-number text-4xl mb-1">
-              {statsInView ? <CountUp end={120} duration={2.5} /> : '0'}%
+              120%
             </div>
             <div className="font-sans text-sm text-white/80 uppercase tracking-wider">Crecimiento promedio</div>
           </div>

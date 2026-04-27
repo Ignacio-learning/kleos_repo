@@ -1,124 +1,188 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Logo = () => (
-  <div className="flex items-center gap-2">
-    <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M50 85 C20 85 10 50 20 25 C30 10 45 15 45 15 C45 15 40 30 50 45" stroke="#C9A84C" strokeWidth="4" strokeLinecap="round" />
-      <path d="M50 85 C80 85 90 50 80 25 C70 10 55 15 55 15 C55 15 60 30 50 45" stroke="#C9A84C" strokeWidth="4" strokeLinecap="round" />
-      <path d="M30 45 C40 35 45 35 45 35 C45 35 35 45 30 55" stroke="#C9A84C" strokeWidth="3" strokeLinecap="round" />
-      <path d="M70 45 C60 35 55 35 55 35 C55 35 65 45 70 55" stroke="#C9A84C" strokeWidth="3" strokeLinecap="round" />
-      <path d="M25 35 C35 25 40 25 40 25 C40 25 30 35 25 45" stroke="#C9A84C" strokeWidth="3" strokeLinecap="round" />
-      <path d="M75 35 C65 25 60 25 60 25 C60 25 70 35 75 45" stroke="#C9A84C" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-    <div className="flex flex-col leading-none">
-      <span className="font-display font-bold text-xl text-text-main tracking-wide">KLEOS</span>
-      <span className="font-sans font-normal text-[0.65rem] text-text-muted tracking-[0.2em] mt-[2px]">DIGITAL</span>
-    </div>
-  </div>
-);
+/* ─── Logo SVG: "K" serif con ramas de olivo ─── */
+export function Logo({ className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 120 120"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="Kleos Agencia"
+    >
+      {/* Círculo de fondo sutil */}
+      <circle cx="60" cy="60" r="56" stroke="#C9A84C" strokeWidth="1" opacity="0.4" />
 
-const Navbar = () => {
+      {/* Letra K serif */}
+      <text
+        x="50%"
+        y="50%"
+        dominantBaseline="central"
+        textAnchor="middle"
+        fontFamily="'Cormorant Garamond', serif"
+        fontWeight="600"
+        fontSize="52"
+        fill="#C9A84C"
+      >
+        K
+      </text>
+
+      {/* Rama de olivo izquierda */}
+      <g opacity="0.85">
+        <path d="M18 60 Q10 52 14 42" stroke="#C9A84C" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        <ellipse cx="13" cy="45" rx="4" ry="2.5" transform="rotate(-30 13 45)" fill="#C9A84C" opacity="0.7" />
+        <ellipse cx="16" cy="53" rx="4" ry="2.5" transform="rotate(-15 16 53)" fill="#C9A84C" opacity="0.7" />
+        <ellipse cx="15" cy="42" rx="3.5" ry="2" transform="rotate(-45 15 42)" fill="#C9A84C" opacity="0.6" />
+        <path d="M18 60 Q9 62 11 72" stroke="#C9A84C" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        <ellipse cx="10" cy="69" rx="4" ry="2.5" transform="rotate(20 10 69)" fill="#C9A84C" opacity="0.7" />
+        <ellipse cx="13" cy="62" rx="3.5" ry="2" transform="rotate(10 13 62)" fill="#C9A84C" opacity="0.6" />
+      </g>
+
+      {/* Rama de olivo derecha */}
+      <g opacity="0.85">
+        <path d="M102 60 Q110 52 106 42" stroke="#C9A84C" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        <ellipse cx="107" cy="45" rx="4" ry="2.5" transform="rotate(30 107 45)" fill="#C9A84C" opacity="0.7" />
+        <ellipse cx="104" cy="53" rx="4" ry="2.5" transform="rotate(15 104 53)" fill="#C9A84C" opacity="0.7" />
+        <ellipse cx="105" cy="42" rx="3.5" ry="2" transform="rotate(45 105 42)" fill="#C9A84C" opacity="0.6" />
+        <path d="M102 60 Q111 62 109 72" stroke="#C9A84C" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        <ellipse cx="110" cy="69" rx="4" ry="2.5" transform="rotate(-20 110 69)" fill="#C9A84C" opacity="0.7" />
+        <ellipse cx="107" cy="62" rx="3.5" ry="2" transform="rotate(-10 107 62)" fill="#C9A84C" opacity="0.6" />
+      </g>
+    </svg>
+  );
+}
+
+const leftLinks = [
+  { label: 'Inicio', href: '#inicio' },
+  { label: 'Servicios', href: '#servicios' },
+  { label: 'Nosotros', href: '#nosotros' },
+];
+
+const rightLinks = [
+  { label: 'Blog', href: '#blog' },
+  { label: 'Proyectos', href: '#proyectos' },
+  { label: 'Contacto', href: '#contacto' },
+];
+
+export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Servicios', href: '#servicios' },
-    { name: 'Casos de Éxito', href: '#casos' },
-    { name: 'Nosotros', href: '#nosotros' },
-    { name: 'Blog', href: '#blog' },
-    { name: 'Contacto', href: '#contacto' },
-  ];
+  const navStyle = {
+    background: scrolled
+      ? 'rgba(18, 28, 38, 0.95)'
+      : 'rgba(30, 45, 61, 0.82)',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    transition: 'background 0.3s ease',
+  };
+
+  const linkClass =
+    'text-sm font-medium tracking-wide text-text-light/80 hover:text-gold transition-colors duration-200';
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-        scrolled ? 'bg-bg/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
-        <a href="#" className="z-50">
-          <Logo />
-        </a>
+    <>
+      <header
+        className="fixed top-0 left-0 right-0 z-50 border-b border-gold/10"
+        style={navStyle}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          <div className="flex gap-6">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-text-body hover:text-green-dark font-medium transition-colors text-sm"
-              >
-                {link.name}
+          {/* Desktop: Left links */}
+          <nav className="hidden md:flex items-center gap-8 flex-1">
+            {leftLinks.map((l) => (
+              <a key={l.label} href={l.href} className={linkClass}>
+                {/* EDITABLE */}{l.label}
               </a>
             ))}
-          </div>
-          <a
-            href="#contacto"
-            className="bg-green-dark hover:bg-green-mid text-white px-7 py-3 rounded-md font-medium transition-colors shadow-[0_4px_24px_rgba(45,74,34,0.08)]"
-          >
-            Hablemos
+          </nav>
+
+          {/* Center: Logo */}
+          <a href="#inicio" className="flex-shrink-0 mx-6" aria-label="Kleos Agencia — Inicio">
+            <Logo className="w-12 h-12 md:w-14 md:h-14" />
           </a>
-        </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden z-50 text-text-main p-2"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            {mobileMenuOpen ? (
-              <path d="M18 6L6 18M6 6l12 12" />
-            ) : (
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
-
-        {/* Mobile Drawer */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'tween', duration: 0.3 }}
-              className="fixed inset-0 bg-bg z-40 flex flex-col pt-24 px-6"
+          {/* Desktop: Right links + CTA */}
+          <nav className="hidden md:flex items-center gap-8 flex-1 justify-end">
+            {rightLinks.map((l) => (
+              <a key={l.label} href={l.href} className={linkClass}>
+                {/* EDITABLE */}{l.label}
+              </a>
+            ))}
+            <a
+              href="#contacto"
+              className="ml-2 px-5 py-2 text-sm font-medium tracking-wide border border-gold text-gold hover:bg-gold hover:text-dark transition-all duration-200 rounded-sm"
             >
-              <div className="flex flex-col gap-6 text-xl font-display">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-text-main hover:text-green-dark border-b border-border pb-4"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
+              {/* EDITABLE */}Hablemos →
+            </a>
+          </nav>
+
+          {/* Mobile: hamburger */}
+          <button
+            className="md:hidden text-text-light p-2"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+          >
+            <span className="flex flex-col gap-1.5 w-6">
+              <span
+                className="block h-px bg-text-light transition-all duration-300"
+                style={{ transform: menuOpen ? 'translateY(5px) rotate(45deg)' : 'none' }}
+              />
+              <span
+                className="block h-px bg-text-light transition-all duration-300"
+                style={{ opacity: menuOpen ? 0 : 1 }}
+              />
+              <span
+                className="block h-px bg-text-light transition-all duration-300"
+                style={{ transform: menuOpen ? 'translateY(-5px) rotate(-45deg)' : 'none' }}
+              />
+            </span>
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.25 }}
+            className="fixed top-16 left-0 right-0 z-40 md:hidden border-b border-gold/20"
+            style={{ background: 'rgba(18, 28, 38, 0.98)', backdropFilter: 'blur(16px)' }}
+          >
+            <nav className="flex flex-col items-center gap-6 py-8">
+              {[...leftLinks, ...rightLinks].map((l) => (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  className="text-base font-medium text-text-light/80 hover:text-gold transition-colors"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {l.label}
+                </a>
+              ))}
               <a
                 href="#contacto"
-                onClick={() => setMobileMenuOpen(false)}
-                className="mt-8 bg-green-dark text-white text-center py-4 rounded-md font-medium"
+                className="mt-2 px-6 py-2.5 border border-gold text-gold text-sm font-medium hover:bg-gold hover:text-dark transition-all duration-200 rounded-sm"
+                onClick={() => setMenuOpen(false)}
               >
-                Hablemos
+                Hablemos →
               </a>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </nav>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
-};
+}
 
-export { Navbar, Logo };
+export default Navbar;

@@ -1,112 +1,247 @@
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import CountUp from 'react-countup';
 
-const fadeUpVariant = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-};
+/* ─── Iconos SVG por servicio ─── */
+const IconWeb = () => (
+  <svg viewBox="0 0 32 32" fill="none" className="w-10 h-10" aria-hidden="true">
+    <rect x="2" y="5" width="28" height="20" rx="2" stroke="#C9A84C" strokeWidth="1.5" />
+    <path d="M2 11h28" stroke="#C9A84C" strokeWidth="1.5" />
+    <circle cx="7" cy="8" r="1.2" fill="#C9A84C" />
+    <circle cx="11" cy="8" r="1.2" fill="#C9A84C" />
+    <circle cx="15" cy="8" r="1.2" fill="#C9A84C" />
+    <path d="M8 17h6M8 21h10" stroke="#C9A84C" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
 
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
+const IconMarketing = () => (
+  <svg viewBox="0 0 32 32" fill="none" className="w-10 h-10" aria-hidden="true">
+    <path d="M4 24 L10 16 L16 20 L22 10 L28 8" stroke="#C9A84C" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+    <circle cx="28" cy="8" r="2.5" stroke="#C9A84C" strokeWidth="1.5" />
+    <path d="M4 28h24" stroke="#C9A84C" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
+const IconMobile = () => (
+  <svg viewBox="0 0 32 32" fill="none" className="w-10 h-10" aria-hidden="true">
+    <rect x="9" y="2" width="14" height="28" rx="3" stroke="#C9A84C" strokeWidth="1.5" />
+    <path d="M9 8h14M9 24h14" stroke="#C9A84C" strokeWidth="1.2" />
+    <circle cx="16" cy="27" r="1.2" fill="#C9A84C" />
+    <path d="M13 5h6" stroke="#C9A84C" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
+const IconBranding = () => (
+  <svg viewBox="0 0 32 32" fill="none" className="w-10 h-10" aria-hidden="true">
+    <path d="M16 4 L28 10 L28 22 L16 28 L4 22 L4 10 Z" stroke="#C9A84C" strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M16 4 L16 28M4 10 L28 22M4 22 L28 10" stroke="#C9A84C" strokeWidth="0.8" opacity="0.5" />
+    <circle cx="16" cy="16" r="4" stroke="#C9A84C" strokeWidth="1.2" />
+  </svg>
+);
 
 const services = [
   {
-    title: 'Consultoría TI',
-    desc: 'Transformamos ideas en planes concretos y arquitecturas sólidas.',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="16" x2="12" y2="12" />
-        <line x1="12" y1="8" x2="12.01" y2="8" />
-      </svg>
-    ),
+    id: 'web',
+    icon: <IconWeb />,
+    name: 'Desarrollo Web',
+    description: 'Sitios y aplicaciones web escalables, rápidos y con diseño excepcional.',
+    metrics: [
+      { value: 340, suffix: '%', label: 'Velocidad de carga mejorada', prefix: '+' },
+      { value: 2.8, suffix: 'x', label: 'Conversión promedio', prefix: '+' },
+      { value: 98, suffix: 'pts', label: 'Score de rendimiento', prefix: '' },
+    ],
   },
   {
-    title: 'Desarrollo Web',
-    desc: 'Aplicaciones rápidas, seguras y escalables.',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-        <line x1="8" y1="21" x2="16" y2="21" />
-        <line x1="12" y1="17" x2="12" y2="21" />
-      </svg>
-    ),
+    id: 'marketing',
+    icon: <IconMarketing />,
+    name: 'Marketing Digital',
+    description: 'Estrategias basadas en datos que aumentan tu visibilidad y generan leads.',
+    metrics: [
+      { value: 520, suffix: '%', label: 'Aumento en visibilidad orgánica', prefix: '+' },
+      { value: 180, suffix: '%', label: 'Leads generados', prefix: '+' },
+      { value: 3.4, suffix: 'x', label: 'ROI promedio en campañas', prefix: '' },
+    ],
   },
   {
-    title: 'Desarrollo Mobile',
-    desc: 'Experiencias móviles que conectan con tus usuarios.',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-        <line x1="12" y1="18" x2="12.01" y2="18" />
-      </svg>
-    ),
+    id: 'mobile',
+    icon: <IconMobile />,
+    name: 'Desarrollo Mobile',
+    description: 'Apps nativas e híbridas que ofrecen experiencias excepcionales.',
+    metrics: [
+      { value: 4.8, suffix: '★', label: 'Rating promedio en tiendas', prefix: '+' },
+      { value: 200, suffix: 'k', label: 'Descargas acumuladas', prefix: '+' },
+      { value: 99, suffix: '%', label: 'Uptime garantizado', prefix: '' },
+    ],
   },
   {
-    title: 'Marketing Digital',
-    desc: 'Atrae, convierte y fideliza clientes con estrategia.',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-        <line x1="12" y1="22.08" x2="12" y2="12" />
-      </svg>
-    ),
+    id: 'branding',
+    icon: <IconBranding />,
+    name: 'Branding & Diseño',
+    description: 'Identidades de marca que inspiran confianza y dejan huella duradera.',
+    metrics: [
+      { value: 75, suffix: '%', label: 'Reconocimiento de marca', prefix: '+' },
+      { value: 3, suffix: 'x', label: 'Engagement en redes', prefix: '+' },
+      { value: 100, suffix: '%', label: 'Clientes renovaron', prefix: '' },
+    ],
   },
 ];
 
-const Services = () => {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.2 });
+function MetricCountUp({ value, prefix, suffix, active }) {
+  const decimals = value % 1 !== 0 ? 1 : 0;
+  if (!active) return <span>{prefix}0{suffix}</span>;
+  return (
+    <span>
+      {prefix}{value}{suffix}
+      {/* 
+      {prefix}
+      <CountUp
+        end={value}
+        duration={1.5}
+        decimals={decimals}
+        useEasing
+        start={0}
+      />
+      {suffix}
+      */}
+    </span>
+  );
+}
+
+function ServiceCard({ service, index, inView }) {
+  const [flipped, setFlipped] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  const handleInteraction = () => {
+    if (isMobile) setFlipped((v) => !v);
+  };
+
+  const cardFlipped = isMobile ? flipped : undefined;
 
   return (
-    <section id="servicios" className="py-24 md:py-32 relative">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <motion.div
-          ref={ref}
-          variants={staggerContainer}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          className="flex flex-col items-center text-center mb-16"
-        >
-          <motion.span variants={fadeUpVariant} className="font-mono text-sm tracking-widest text-text-muted uppercase mb-4">
-            Servicios
-          </motion.span>
-          <motion.h2 variants={fadeUpVariant} className="font-display font-bold text-4xl md:text-5xl text-text-main mb-6">
-            Soluciones que impulsan tu negocio.
-          </motion.h2>
-          <motion.p variants={fadeUpVariant} className="font-sans text-lg text-text-body max-w-2xl">
-            Combinamos estrategia, tecnología y experiencia para crear soluciones digitales que generan resultados.
-          </motion.p>
-        </motion.div>
+    <motion.div
+      className="h-80 md:h-96"
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+    >
+      {/* Outer container with perspective */}
+      <div
+        className={`flip-card w-full h-full ${cardFlipped ? 'flipped' : ''}`}
+        onClick={handleInteraction}
+        style={{ cursor: isMobile ? 'pointer' : 'default' }}
+      >
+        <div className="flip-card-inner">
 
-        <motion.div
-          ref={ref}
-          variants={staggerContainer}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {services.map((service, index) => (
-            <motion.div
-              key={index}
-              variants={fadeUpVariant}
-              whileHover={{ y: -4, boxShadow: '0 8px 32px rgba(45,74,34,0.15)' }}
-              className="bg-bg-card border border-border rounded-xl p-8 transition-all duration-300 flex flex-col h-full"
-            >
-              <div className="w-12 h-12 bg-bg rounded-lg border border-border flex items-center justify-center text-green-dark mb-6">
-                {service.icon}
-              </div>
-              <h3 className="font-display font-bold text-xl text-text-main mb-3">{service.title}</h3>
-              <p className="font-sans text-text-body text-base flex-grow">{service.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+          {/* Front face */}
+          <div
+            className="flip-card-front rounded-sm border border-gold/30 flex flex-col justify-between p-7"
+            style={{ backgroundColor: '#1E2D3D' }}
+          >
+            <div className="flex flex-col gap-4">
+              {service.icon}
+              <h3 className="font-display text-xl font-semibold text-text-light">
+                {/* EDITABLE */}{service.name}
+              </h3>
+              <p className="text-text-muted text-sm leading-relaxed">
+                {/* EDITABLE */}{service.description}
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <span className="text-gold text-lg">→</span>
+            </div>
+            {isMobile && (
+              <p className="text-gold/50 text-xs mt-2 text-center">Toca para ver resultados</p>
+            )}
+          </div>
+
+          {/* Back face */}
+          <div
+            className="flip-card-back rounded-sm flex flex-col justify-center gap-5 p-7"
+            style={{ backgroundColor: '#A07830' }}
+          >
+            <h4 className="font-display text-lg font-semibold text-dark text-center">
+              Resultados que logramos
+            </h4>
+            <ul className="flex flex-col gap-4">
+              {service.metrics.map((m, mi) => (
+                <li key={mi} className="flex items-center gap-4">
+                  <span className="font-display text-2xl font-bold text-dark min-w-[80px]">
+                    <MetricCountUp
+                      value={m.value}
+                      prefix={m.prefix}
+                      suffix={m.suffix}
+                      active={isMobile ? flipped : true}
+                    />
+                  </span>
+                  <span className="text-dark/80 text-sm leading-tight">
+                    {/* EDITABLE */}{m.label}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
-      <div className="mt-24 greek-divider w-full" />
+    </motion.div>
+  );
+}
+
+export default function Services() {
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
+
+  return (
+    <section
+      id="servicios"
+      className="py-24 px-6 bg-cream"
+      style={{ position: 'relative', zIndex: 2 }}
+    >
+      <div ref={ref} className="max-w-7xl mx-auto">
+
+        {/* Header */}
+        <div className="text-center mb-14">
+          <motion.p
+            className="text-xs font-medium tracking-[0.25em] text-text-main/40 uppercase mb-4"
+            initial={{ opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5 }}
+          >
+            {/* EDITABLE */}Nuestros servicios
+          </motion.p>
+          <motion.h2
+            className="font-display text-3xl md:text-4xl font-semibold text-text-main"
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.08 }}
+          >
+            {/* EDITABLE */}
+            Soluciones digitales diseñadas para{' '}
+            <span style={{ color: '#C9A84C' }}>conquistar</span> tu mercado.
+          </motion.h2>
+          <motion.p
+            className="text-text-main/50 text-sm mt-3 hidden md:block"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.18 }}
+          >
+            Pasa el cursor sobre cada tarjeta para ver los resultados.
+          </motion.p>
+        </div>
+
+        {/* Cards grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          {services.map((service, i) => (
+            <ServiceCard key={service.id} service={service} index={i} inView={inView} />
+          ))}
+        </div>
+      </div>
     </section>
   );
-};
-
-export default Services;
+}
